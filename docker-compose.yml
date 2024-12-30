@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: hotel_db
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U username -d hotel_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  django_app:
+    build:
+      context: .
+    container_name: django_app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SERVICE: django
+      DATABASE_URL: postgresql://username:password@db:5432/hotel_db
+      DEBUG: True
+      ALLOWED_HOSTS: 127.0.0.1,localhost,django_app
+    command: sh -c "wait-for-it db:5432 -- python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/usr/src/app
+
+  scrapy_app:
+    build:
+      context: .
+    container_name: scrapy_app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SERVICE: scrapy
+      DATABASE_URL: postgresql+psycopg2://username:password@db:5432/hotel_db
+    volumes:
+      - ./scraper:/usr/src/scraper
+
+volumes:
+  postgres_data:

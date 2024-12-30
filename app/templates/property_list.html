@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Property List</title>
+</head>
+<body>
+    <h1>Properties</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for property in properties %}
+            <tr>
+                <td>{{ property.city_name }}</td>
+                <td>{{ property.property_name }}</td>
+                <td>{{ property.price }}</td>
+                <td>{{ property.rating }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

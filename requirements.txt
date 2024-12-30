@@ -1,0 +1,8 @@
+Django>=4.2
+Scrapy>=2.5
+aiohttp>=3.8
+psycopg2-binary>=2.9
+sqlalchemy>=1.4
+requests>=2.26
+Scrapy
+sqlalchemy
